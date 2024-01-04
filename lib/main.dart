@@ -17,7 +17,6 @@ class rick_and_morty extends StatelessWidget {
      debugShowCheckedModeBanner: false,
      onGenerateRoute: apprRouter.generateRoute,
    
-      
     );
   }
 }

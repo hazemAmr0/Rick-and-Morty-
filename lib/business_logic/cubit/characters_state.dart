@@ -1,11 +1,14 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
-part of'characters_cubit.dart';
-
-
-
-
+part of 'characters_cubit.dart';
 @immutable
 abstract class CharactersState {}
+class CharactersInitial extends  CharactersState {}
 
-class CharactersInitial extends CharactersState {}
+class CharactersLoaded extends  CharactersState {
+
+  final List<Character> characters;
+  CharactersLoaded(this.characters);
+
+}
+
+
+
