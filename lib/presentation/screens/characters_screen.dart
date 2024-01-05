@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty/business_logic/cubit/characters_cubit.dart';
@@ -13,26 +12,104 @@ class CharactersScreen extends StatefulWidget {
 }
 
 class _CharactersScreenState extends State<CharactersScreen> {
+  late List<Character> SearchForCharacters;
   late List<Character> allcharacters;
+  final _SearchTextController = TextEditingController();
+  bool isSearching = false;
   @override
   void initState() {
     super.initState();
-    allcharacters =
-        BlocProvider.of<CharactersCubit>(context).getAllCharacters();
+
+    BlocProvider.of<CharactersCubit>(context).getAllCharacters();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 164, 176, 109),
-        title: const Text(
-          'Rick and Morty',
-          style: TextStyle(color: Colors.black),
-        ),
+        actions: AppbarActions(),
+        backgroundColor: Colors.teal.shade800,
+        title: isSearching ? SearchField() : BuildAppTitle(),
       ),
       body: BuildBlocWidget(),
     );
+  }
+
+  Widget BuildAppTitle() {
+    return const Text(
+      'Rick and Morty',
+      style: TextStyle(color: Colors.black),
+    );
+  }
+
+  Widget SearchField() {
+    return TextField(
+      controller: _SearchTextController,
+      decoration: InputDecoration(
+        hintText: 'Find Your Character',
+        border: InputBorder.none,
+        hintStyle: TextStyle(color: Colors.white60, fontSize: 18),
+        
+      ),
+      style: const TextStyle(color: Colors.white, fontSize: 18),
+      onChanged: (SearchedCharacter) {
+        addSearchedForItemToSearchList(SearchedCharacter);
+      },
+    );
+  }
+
+  void addSearchedForItemToSearchList(String SearchedCharacter) {
+    SearchForCharacters = allcharacters
+        .where((character) =>
+            character.name.toLowerCase().startsWith(SearchedCharacter))
+        .toList();
+        setState(() {
+          
+        });
+  }
+
+  List<Widget> AppbarActions() {
+    if (isSearching) {
+      return [
+        IconButton(
+          onPressed: () {
+            _ClearSearch();
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.clear, color: const Color.fromARGB(255, 24, 24, 24)),
+        ),
+      ];
+    } else {
+      return [
+        IconButton(
+            onPressed: _StartSearch,
+            icon: Icon(Icons.search, color: const Color.fromARGB(255, 10, 10, 10))),
+      ];
+    }
+  }
+
+  void _StartSearch() {
+    ModalRoute.of(context)!.addLocalHistoryEntry(
+      LocalHistoryEntry(
+        onRemove: _StopSearching,
+      ),
+    );
+    setState(() {
+      isSearching = true;
+    });
+  }
+
+  void _StopSearching() {
+    _ClearSearch;
+    setState(() {
+      isSearching = false;
+    });
+  }
+
+  void _ClearSearch() {
+    setState(() {
+      _SearchTextController.clear();
+    });
   }
 
   Widget BuildBlocWidget() {
@@ -55,7 +132,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
   Widget BuildLoadingListWidget() {
     return SingleChildScrollView(
       child: Container(
-        color: Colors.grey,
+        color: Colors.teal.shade900,
         child: Column(children: [
           BuildCharactersList(),
         ]),
@@ -74,9 +151,9 @@ class _CharactersScreenState extends State<CharactersScreen> {
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(4),
-        itemCount: allcharacters.length,
+        itemCount:_SearchTextController.text.isEmpty ? allcharacters.length : SearchForCharacters.length,
         itemBuilder: (context, index) {
-          return CharacterItem(character: allcharacters[index]);
+          return CharacterItem(character:_SearchTextController.text.isEmpty ? allcharacters[index] : SearchForCharacters[index],);
         });
   }
 }
