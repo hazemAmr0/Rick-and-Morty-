@@ -1,12 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rick_and_morty/business_logic/cubit/characters_cubit.dart';
-import 'package:rick_and_morty/data/models/characters.dart';
-import 'package:rick_and_morty/data/repository/charcaters_repository.dart';
-import 'package:rick_and_morty/data/web_services/charcters_web_serviceses.dart';
+import 'business_logic/cubit/characters_cubit.dart';
+import 'data/models/characters.dart';
+import 'data/repository/charcaters_repository.dart';
+import 'data/web_services/charcters_web_serviceses.dart';
 
-import 'package:rick_and_morty/presentation/screens/characters_screen.dart';
+import 'presentation/screens/characters_screen.dart';
 
 import 'constants/strings.dart';
 import 'presentation/screens/characters_details_screen.dart';

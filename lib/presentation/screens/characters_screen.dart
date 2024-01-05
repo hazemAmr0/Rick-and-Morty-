@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rick_and_morty/business_logic/cubit/characters_cubit.dart';
-import 'package:rick_and_morty/data/models/characters.dart';
-import 'package:rick_and_morty/presentation/widgets/character_item.dart';
+import 'package:flutter_offline/flutter_offline.dart';
+import '../../business_logic/cubit/characters_cubit.dart';
+import '../../data/models/characters.dart';
+import '../widgets/character_item.dart';
 
 class CharactersScreen extends StatefulWidget {
   const CharactersScreen({super.key});
@@ -26,14 +27,52 @@ class _CharactersScreenState extends State<CharactersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.teal.shade900,
       appBar: AppBar(
         actions: AppbarActions(),
         backgroundColor: Colors.teal.shade800,
         title: isSearching ? SearchField() : BuildAppTitle(),
       ),
-      body: BuildBlocWidget(),
+     body: OfflineBuilder(
+        connectivityBuilder: (BuildContext context,
+            ConnectivityResult connectivity, Widget child) {
+          final bool connected = connectivity != ConnectivityResult.none;
+          if (connected) {
+            return BuildBlocWidget();
+          } else {
+            return BuildNoInternetWidget();
+          }
+        },
+      
+        child: Center(child: CircularProgressIndicator()) ,
+      ),
     );
   }
+  
+
+
+Widget BuildNoInternetWidget(){
+return Center(
+child: Container(
+color: Colors.teal.shade900,
+child: Column(
+mainAxisAlignment: MainAxisAlignment.center,
+crossAxisAlignment: CrossAxisAlignment.center,
+
+children: [
+SizedBox(height: 20,),
+Text('Can\'t connect .. check internet',style: TextStyle(color: Colors.white,fontSize: 20),),
+Image.asset( 'assets/images/nowifi.png',height: 300,width: 300,),
+
+],
+
+),
+
+),
+
+);
+
+}
 
   Widget BuildAppTitle() {
     return const Text(

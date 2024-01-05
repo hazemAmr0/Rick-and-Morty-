@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rick_and_morty/constants/strings.dart';
-import 'package:rick_and_morty/data/models/characters.dart';
+import '../../constants/strings.dart';
+import '../../data/models/characters.dart';
 
 class CharacterItem extends StatelessWidget {
   final Character character;
